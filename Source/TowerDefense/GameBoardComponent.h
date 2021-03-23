@@ -19,6 +19,9 @@ public:
     void Initialize(FVector2D InSize);
 
 private:
+    void FindPaths();
+
+private:
     UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
     AActor* Ground;
 
@@ -27,4 +30,5 @@ private:
 
     FVector2D Size;
     TArray<TWeakObjectPtr<AGameTile>> GameTiles;
+    TQueue<TWeakObjectPtr<AGameTile>> SearchFrontier;
 };

@@ -15,9 +15,29 @@ public:
     // Sets default values for this actor's properties
     AGameTile();
 
+    static void MakeEastWestNeighbors(AGameTile* EastTile, AGameTile* WestTile);
+    static void MakeNorthSouthNeighbors(AGameTile* NorthTile, AGameTile* SouthTile);
+
+    FORCEINLINE bool HasPath() const { return Distance != TNumericLimits<int32>::Max(); }
+
+    FORCEINLINE bool IsAlternative() const { return bIsAlternative; }
+    FORCEINLINE void SetIsAlternative(bool bInIsAlternative) { bIsAlternative = bInIsAlternative; }
+
+    AGameTile* GrowPathNorth();
+    AGameTile* GrowPathEast();
+    AGameTile* GrowPathSouth();
+    AGameTile* GrowPathWest();
+    
+    void BecomeDestination();
+    void ClearPath();
+    void ShowPath() const;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
+
+private:
+    AGameTile* GrowPathTo(AGameTile* NeighborTile);
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
@@ -25,4 +45,15 @@ private:
     
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
     UStaticMeshComponent* Arrow;
+
+    static const FQuat NorthRotation;
+    static const FQuat EastRotation;
+    static const FQuat SouthRotation;
+    static const FQuat WestRotation;
+
+    TWeakObjectPtr<AGameTile> NorthTile, EastTile, SouthTile, WestTile;
+    TWeakObjectPtr<AGameTile> NextTileOnPath;
+    int32 Distance;
+
+    bool bIsAlternative;
 };
