@@ -6,26 +6,37 @@
 #include "Components/ActorComponent.h"
 #include "GameComponent.generated.h"
 
+class UGameTileContentFactory;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOWERDEFENSE_API UGameComponent : public UActorComponent
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:	
-    // Sets default values for this component's properties
-    UGameComponent();
+	// Sets default values for this component's properties
+	UGameComponent();
 
-    virtual void BeginPlay() override;
-
+	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
 #if WITH_EDITOR
-    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
-    
-private:
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
-    FVector2D BoardSize = FVector2D {11.0f, 11.0f};
 
-    UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
-    AActor* GameBoard;
+private:
+	void HandleTouch();
+	
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
+	FVector2D BoardSize = FVector2D {11.0f, 11.0f};
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
+	AActor* GameBoard;
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<UGameTileContentFactory> GameTileContentFactoryClass;
+
+	UPROPERTY()
+	UGameTileContentFactory* GameTileContentFactory;
 };
