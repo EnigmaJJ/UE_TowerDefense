@@ -16,20 +16,23 @@ class AGameTileContent;
 UCLASS()
 class TOWERDEFENSE_API UGameTileContentFactory : public UPrimaryDataAsset
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    AGameTileContent* Get(EGameTileContentType Type);
-    
-    void Reclaim(AGameTileContent* GameTileContent);
+	AGameTileContent* Get(EGameTileContentType Type);
+
+	void Reclaim(AGameTileContent* GameTileContent);
 
 private:
-    AGameTileContent* Get(const TSubclassOf<AGameTileContent>& GameTileContentClass);
+	AGameTileContent* Get(const TSubclassOf<AGameTileContent>& GameTileContentClass);
 
 private:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
-    TSubclassOf<AGameTileContent> DestinationClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AGameTileContent> DestinationClass;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
-    TSubclassOf<AGameTileContent> EmptyClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AGameTileContent> EmptyClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AGameTileContent> WallClass;
 };

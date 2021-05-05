@@ -7,6 +7,10 @@
 #include "GameTileContentFactory.h"
 #include "Math/UnitConversion.h"
 
+FName UGameBoardComponent::GridTextureParamName{ TEXT("GridTexture") };
+FName UGameBoardComponent::GridTexCoordScaleName{ TEXT("GridTexCoordScale") };
+UTexture* UGameBoardComponent::EngineWhiteSquareTexture = nullptr;
+
 // Sets default values for this component's properties
 UGameBoardComponent::UGameBoardComponent()
 {
@@ -63,6 +67,7 @@ void UGameBoardComponent::Initialize(FVector2D InSize, UGameTileContentFactory* 
 	}
 
 	ToggleDestination(GameTiles[GameTiles.Num() / 2].Get());
+	SetShowGrid(true);
 }
 
 AGameTile* UGameBoardComponent::GetTile() const
@@ -104,10 +109,80 @@ void UGameBoardComponent::ToggleDestination(AGameTile* GameTile)
 			FindPaths();
 		}
 	}
-	else
+	else if (EGameTileContentType::Empty == GameTile->GetContent()->GetType())
 	{
 		GameTile->SetContent(GameTileContentFactory->Get(EGameTileContentType::Destination));
 		FindPaths();
+	}
+}
+
+void UGameBoardComponent::ToggleWall(AGameTile* GameTile)
+{
+	if (nullptr == GameTile)
+	{
+		return;
+	}
+
+	if (EGameTileContentType::Wall == GameTile->GetContent()->GetType())
+	{
+		GameTile->SetContent(GameTileContentFactory->Get(EGameTileContentType::Empty));
+		FindPaths();
+	}
+	else if (EGameTileContentType::Empty == GameTile->GetContent()->GetType())
+	{
+		GameTile->SetContent(GameTileContentFactory->Get(EGameTileContentType::Wall));
+		if (!FindPaths())
+		{
+			GameTile->SetContent(GameTileContentFactory->Get(EGameTileContentType::Empty));
+			FindPaths();
+		}
+	}
+}
+
+void UGameBoardComponent::SetShowPaths(bool bShowPaths)
+{
+	if (bIsShowPaths == bShowPaths)
+	{
+		return;
+	}
+
+	bIsShowPaths = bShowPaths;
+	for (const TWeakObjectPtr<AGameTile>& GameTile : GameTiles)
+	{
+		bIsShowPaths ? GameTile->ShowPath() : GameTile->HidePath();
+	}
+}
+
+void UGameBoardComponent::SetShowGrid(bool bShowGrid)
+{
+	if (bIsShowGrid == bShowGrid)
+	{
+		return;
+	}
+
+	bIsShowGrid = bShowGrid;
+	
+	auto StaticMeshComponent = Ground->FindComponentByClass<UStaticMeshComponent>();
+	checkSlow(nullptr != StaticMeshComponent);
+
+	if (nullptr == GroundMaterialInstance)
+	{
+		GroundMaterialInstance = StaticMeshComponent->CreateDynamicMaterialInstance(0);
+	}
+
+	if (nullptr == EngineWhiteSquareTexture)
+	{
+		GroundMaterialInstance->GetTextureParameterValue(GridTextureParamName, EngineWhiteSquareTexture);
+	}
+
+	if (bIsShowGrid)
+	{
+		GroundMaterialInstance->SetVectorParameterValue(GridTexCoordScaleName, FLinearColor{ FVector4{Size.X, Size.Y} });
+		GroundMaterialInstance->SetTextureParameterValue(GridTextureParamName, GridTexture);
+	}
+	else
+	{
+		GroundMaterialInstance->SetTextureParameterValue(GridTextureParamName, EngineWhiteSquareTexture);
 	}
 }
 
@@ -156,11 +231,22 @@ bool UGameBoardComponent::FindPaths()
 			}
 		}
 	}
-
-	for (auto Iter = GameTiles.CreateIterator(); Iter; ++Iter)
+	
+	for (const TWeakObjectPtr<AGameTile>& GameTile : GameTiles)
 	{
-		const TWeakObjectPtr<AGameTile> GameTile = *Iter;
-		GameTile->ShowPath();
+		if (!GameTile->HasPath())
+		{
+			return false;
+		}
+	}
+
+	if (bIsShowPaths)
+	{
+		for (auto Iter = GameTiles.CreateIterator(); Iter; ++Iter)
+		{
+			const TWeakObjectPtr<AGameTile> GameTile = *Iter;
+			GameTile->ShowPath();
+		}
 	}
 
 	return true;

@@ -100,6 +100,12 @@ AGameTile* AGameTile::GrowPathTo(AGameTile* NeighborTile)
 
 	NeighborTile->Distance = Distance + 1;
 	NeighborTile->NextTileOnPath = this;
+
+	AGameTileContent* NeighborTileContent = NeighborTile->GetContent();
+	if ((nullptr != NeighborTileContent) && (EGameTileContentType::Wall == NeighborTileContent->GetType()))
+	{
+		return nullptr;
+	}
 	
 	return NeighborTile;
 }
@@ -118,4 +124,9 @@ void AGameTile::ShowPath() const
 	            NextTileOnPath == EastTile ? EastRotation :
 	            NextTileOnPath == SouthTile ? SouthRotation :
 	            WestRotation);
+}
+
+void AGameTile::HidePath() const
+{
+	Arrow->SetVisibility(false);
 }

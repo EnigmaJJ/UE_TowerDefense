@@ -36,6 +36,7 @@ public:
 	void BecomeDestination();
 	void ClearPath();
 	void ShowPath() const;
+	void HidePath() const;
 
 protected:
 	// Called when the game starts or when spawned

@@ -11,29 +11,30 @@ class UGameTileContentFactory;
 UENUM(BlueprintType)
 enum class EGameTileContentType : uint8
 {
-    Empty,
-    Destination
+	Empty,
+	Destination,
+	Wall
 };
 
 UCLASS()
 class TOWERDEFENSE_API AGameTileContent : public AActor
 {
-    GENERATED_BODY()
-    
-public:	
-    // Sets default values for this actor's properties
-    AGameTileContent();
+	GENERATED_BODY()
 
-    void Recycle();
+public:
+	// Sets default values for this actor's properties
+	AGameTileContent();
 
-    FORCEINLINE EGameTileContentType GetType() const { return Type; }
+	void Recycle();
 
-    void SetOriginFactory(UGameTileContentFactory* InOriginFactory);
-    FORCEINLINE UGameTileContentFactory* GetOriginFactory() const { return OriginFactory.Get(); }
+	FORCEINLINE EGameTileContentType GetType() const { return Type; }
+
+	void SetOriginFactory(UGameTileContentFactory* InOriginFactory);
+	FORCEINLINE UGameTileContentFactory* GetOriginFactory() const { return OriginFactory.Get(); }
 
 private:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-    EGameTileContentType Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	EGameTileContentType Type;
 
-    TWeakObjectPtr<UGameTileContentFactory> OriginFactory;
+	TWeakObjectPtr<UGameTileContentFactory> OriginFactory;
 };

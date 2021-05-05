@@ -41,6 +41,22 @@ void UGameComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	{
 		HandleTouch();
 	}
+	else if (PlayerController->WasInputKeyJustPressed(EKeys::RightMouseButton))
+	{
+		HandleAlternativeTouch();
+	}
+
+	if (PlayerController->WasInputKeyJustPressed(EKeys::V))
+	{
+		UGameBoardComponent* GameBoardComponent = GameBoard->FindComponentByClass<UGameBoardComponent>();
+		GameBoardComponent->SetShowPaths(!GameBoardComponent->IsShowPaths());
+	}
+
+	if (PlayerController->WasInputKeyJustPressed(EKeys::G))
+	{
+		UGameBoardComponent* GameBoardComponent = GameBoard->FindComponentByClass<UGameBoardComponent>();
+		GameBoardComponent->SetShowGrid(!GameBoardComponent->IsShowGrid());
+	}
 }
 
 #if WITH_EDITOR
@@ -70,6 +86,16 @@ void UGameComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChang
 #endif
 
 void UGameComponent::HandleTouch()
+{
+	UGameBoardComponent* GameBoardComponent = GameBoard->FindComponentByClass<UGameBoardComponent>();
+	AGameTile* GameTile = GameBoardComponent->GetTile();
+	if (nullptr != GameTile)
+	{
+		GameBoardComponent->ToggleWall(GameTile);
+	}
+}
+
+void UGameComponent::HandleAlternativeTouch()
 {
 	UGameBoardComponent* GameBoardComponent = GameBoard->FindComponentByClass<UGameBoardComponent>();
 	AGameTile* GameTile = GameBoardComponent->GetTile();

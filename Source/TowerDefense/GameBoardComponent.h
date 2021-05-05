@@ -22,6 +22,13 @@ public:
 	AGameTile* GetTile() const;
 	
 	void ToggleDestination(AGameTile* GameTile);
+	void ToggleWall(AGameTile* GameTile);
+
+	FORCEINLINE bool IsShowGrid() const { return bIsShowGrid; }
+	void SetShowGrid(bool bShowGrid);
+
+	FORCEINLINE bool IsShowPaths() const { return bIsShowPaths; }
+	void SetShowPaths(bool bShowPaths);
 
 private:
 	bool FindPaths();
@@ -33,9 +40,23 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
 	TSubclassOf<class AGameTile> GameTileClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
+	UTexture2D* GridTexture;
+
 	FVector2D Size;
 	TArray<TWeakObjectPtr<AGameTile>> GameTiles;
 	TQueue<TWeakObjectPtr<AGameTile>> SearchFrontier;
 
 	TWeakObjectPtr<UGameTileContentFactory> GameTileContentFactory;
+
+private:
+	static FName GridTextureParamName;
+	static FName GridTexCoordScaleName;
+	static UTexture* EngineWhiteSquareTexture;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* GroundMaterialInstance;
+	
+	bool bIsShowGrid;
+	bool bIsShowPaths;
 };

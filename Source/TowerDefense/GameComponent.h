@@ -13,7 +13,7 @@ class TOWERDEFENSE_API UGameComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UGameComponent();
 
@@ -26,7 +26,8 @@ public:
 
 private:
 	void HandleTouch();
-	
+	void HandleAlternativeTouch();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
 	FVector2D BoardSize = FVector2D {11.0f, 11.0f};
