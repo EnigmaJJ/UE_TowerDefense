@@ -35,4 +35,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TSubclassOf<AGameTileContent> WallClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AGameTileContent> SpawnPointClass;
 };

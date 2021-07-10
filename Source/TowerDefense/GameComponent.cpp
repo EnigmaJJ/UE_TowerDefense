@@ -101,6 +101,15 @@ void UGameComponent::HandleAlternativeTouch()
 	AGameTile* GameTile = GameBoardComponent->GetTile();
 	if (nullptr != GameTile)
 	{
-		GameBoardComponent->ToggleDestination(GameTile);
+		UWorld* World = GetWorld();
+		APlayerController* PlayerController = World->GetFirstPlayerController();
+		if (PlayerController->IsInputKeyDown(EKeys::LeftShift))
+		{
+			GameBoardComponent->ToggleDestination(GameTile);
+		}
+		else
+		{
+			GameBoardComponent->ToggleSpawnPoint(GameTile);
+		}
 	}
 }

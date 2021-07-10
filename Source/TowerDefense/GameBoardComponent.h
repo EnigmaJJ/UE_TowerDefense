@@ -14,15 +14,19 @@ class TOWERDEFENSE_API UGameBoardComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UGameBoardComponent();
 
 	void Initialize(FVector2D InSize, UGameTileContentFactory* InGameTileContentFactory);
 	AGameTile* GetTile() const;
-	
+
 	void ToggleDestination(AGameTile* GameTile);
 	void ToggleWall(AGameTile* GameTile);
+	void ToggleSpawnPoint(AGameTile* GameTile);
+
+	AGameTile* GetSpawnPoint(int Index);
+	FORCEINLINE int GetSpawnPointCount() const { return SpawnPointTiles.Num(); }
 
 	FORCEINLINE bool IsShowGrid() const { return bIsShowGrid; }
 	void SetShowGrid(bool bShowGrid);
@@ -56,7 +60,9 @@ private:
 
 	UPROPERTY()
 	UMaterialInstanceDynamic* GroundMaterialInstance;
-	
+
 	bool bIsShowGrid;
 	bool bIsShowPaths;
+
+	TArray<TWeakObjectPtr<AGameTile>> SpawnPointTiles;
 };

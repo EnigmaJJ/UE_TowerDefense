@@ -16,6 +16,9 @@ AGameTileContent* UGameTileContentFactory::Get(EGameTileContentType Type)
 	case EGameTileContentType::Wall:
 		return Get(WallClass);
 
+	case EGameTileContentType::SpawnPoint:
+		return Get(SpawnPointClass);
+
 	default:
 		checkfSlow(false, TEXT("Unsupported type: %d"), static_cast<int32>(Type));
 		return nullptr;

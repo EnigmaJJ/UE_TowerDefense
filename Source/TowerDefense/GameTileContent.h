@@ -13,7 +13,8 @@ enum class EGameTileContentType : uint8
 {
 	Empty,
 	Destination,
-	Wall
+	Wall,
+	SpawnPoint
 };
 
 UCLASS()

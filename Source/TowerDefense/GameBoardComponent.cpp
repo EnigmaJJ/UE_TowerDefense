@@ -67,6 +67,7 @@ void UGameBoardComponent::Initialize(FVector2D InSize, UGameTileContentFactory* 
 	}
 
 	ToggleDestination(GameTiles[GameTiles.Num() / 2].Get());
+	ToggleSpawnPoint(GameTiles[0].Get());
 	SetShowGrid(true);
 }
 
@@ -137,6 +138,38 @@ void UGameBoardComponent::ToggleWall(AGameTile* GameTile)
 			FindPaths();
 		}
 	}
+}
+
+void UGameBoardComponent::ToggleSpawnPoint(AGameTile* GameTile)
+{
+	if (nullptr == GameTile)
+	{
+		return;
+	}
+
+	if (EGameTileContentType::SpawnPoint == GameTile->GetContent()->GetType())
+	{
+		if (SpawnPointTiles.Num() > 1)
+		{
+			SpawnPointTiles.Remove(GameTile);
+			GameTile->SetContent(GameTileContentFactory->Get(EGameTileContentType::Empty));
+		}
+	}
+	else if (EGameTileContentType::Empty == GameTile->GetContent()->GetType())
+	{
+		GameTile->SetContent(GameTileContentFactory->Get(EGameTileContentType::SpawnPoint));
+		SpawnPointTiles.Add(GameTile);
+	}
+}
+
+AGameTile* UGameBoardComponent::GetSpawnPoint(int Index)
+{
+	if ((Index < 0) || (Index >= SpawnPointTiles.Num()))
+	{
+		return nullptr;
+	}
+
+	return SpawnPointTiles[Index].Get();
 }
 
 void UGameBoardComponent::SetShowPaths(bool bShowPaths)
