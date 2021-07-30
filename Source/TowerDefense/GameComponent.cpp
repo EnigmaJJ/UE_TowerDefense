@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GameComponent.h"
+#include "Enemy.h"
+#include "EnemyFactory.h"
 #include "GameBoardComponent.h"
 #include "GameTile.h"
 #include "GameTileContent.h"
@@ -20,6 +22,7 @@ void UGameComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	EnemyFactory = NewObject<UEnemyFactory>(this, EnemyFactoryClass);
 	GameTileContentFactory = NewObject<UGameTileContentFactory>(this, GameTileContentFactoryClass);
 	
 	UGameBoardComponent* GameBoardComponent =
@@ -56,6 +59,13 @@ void UGameComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	{
 		UGameBoardComponent* GameBoardComponent = GameBoard->FindComponentByClass<UGameBoardComponent>();
 		GameBoardComponent->SetShowGrid(!GameBoardComponent->IsShowGrid());
+	}
+
+	SpawnProgress += (SpawnSpeed * DeltaTime);
+	while (SpawnProgress >= 1.0f)
+	{
+		SpawnProgress -= 1.0f;
+		SpawnEnemy();
 	}
 }
 
@@ -112,4 +122,12 @@ void UGameComponent::HandleAlternativeTouch()
 			GameBoardComponent->ToggleSpawnPoint(GameTile);
 		}
 	}
+}
+
+void UGameComponent::SpawnEnemy()
+{
+	UGameBoardComponent* GameBoardComponent = GameBoard->FindComponentByClass<UGameBoardComponent>();
+	AGameTile* SpawnPoint = GameBoardComponent->GetSpawnPoint(FMath::RandRange(0, GameBoardComponent->GetSpawnPointCount() - 1));
+	AEnemy* Enemy = EnemyFactory->Get();
+	Enemy->SpawnOn(SpawnPoint);
 }

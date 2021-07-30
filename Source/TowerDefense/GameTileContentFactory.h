@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/DataAsset.h"
+#include "GameActorFactory.h"
 #include "GameTileContentFactory.generated.h"
 
 enum class EGameTileContentType : uint8;
@@ -14,7 +14,7 @@ class AGameTileContent;
  * 
  */
 UCLASS()
-class TOWERDEFENSE_API UGameTileContentFactory : public UPrimaryDataAsset
+class TOWERDEFENSE_API UGameTileContentFactory : public UGameActorFactory
 {
 	GENERATED_BODY()
 

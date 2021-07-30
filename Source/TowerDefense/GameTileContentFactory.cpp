@@ -33,8 +33,7 @@ void UGameTileContentFactory::Reclaim(AGameTileContent* GameTileContent)
 
 AGameTileContent* UGameTileContentFactory::Get(const TSubclassOf<AGameTileContent>& GameTileContentClass)
 {
-	UWorld* World = GetWorld();
-	AGameTileContent* GameTileContent = World->SpawnActor<AGameTileContent>(GameTileContentClass);
+	AGameTileContent* GameTileContent = SpawnGameActor<AGameTileContent>(GameTileContentClass);
 	GameTileContent->SetOriginFactory(this);
 
 	return GameTileContent;

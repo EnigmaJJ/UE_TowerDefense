@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "GameComponent.generated.h"
 
+class UEnemyFactory;
 class UGameTileContentFactory;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -28,6 +29,8 @@ private:
 	void HandleTouch();
 	void HandleAlternativeTouch();
 
+	void SpawnEnemy();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
 	FVector2D BoardSize = FVector2D {11.0f, 11.0f};
@@ -38,6 +41,17 @@ private:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
 	TSubclassOf<UGameTileContentFactory> GameTileContentFactoryClass;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<UEnemyFactory> EnemyFactoryClass;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
+	float SpawnSpeed{ 1.0f };
+
 	UPROPERTY()
 	UGameTileContentFactory* GameTileContentFactory;
+
+	UPROPERTY()
+	UEnemyFactory* EnemyFactory;
+
+	float SpawnProgress;
 };
