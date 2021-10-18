@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Direction.h"
 #include "GameFramework/Actor.h"
 #include "Enemy.generated.h"
 
@@ -17,13 +18,35 @@ class TOWERDEFENSE_API AEnemy : public AActor
 public:
 	// Sets default values for this actor's properties
 	AEnemy();
+	
+	virtual void Tick(float DeltaSeconds) override;
 
-public:
 	void SpawnOn(AGameTile* GameTile);
 
 	void SetOriginFactory(UEnemyFactory* InOriginFactory);
 	FORCEINLINE UEnemyFactory* GetOriginFactory() const { return OriginFactory.Get(); }
 
+	bool GameUpdate();
+
 private:
+	void PrepareIntro();
+	void PrepareOutro();
+	void PrepareNextState();
+	void PrepareForward();
+	void PrepareTurnRight();
+	void PrepareTurnLeft();
+	void PrepareTurnAround();
+
+private:
+	UPROPERTY(BlueprintReadWrite, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
+	USceneComponent* ModelComponent;
+	
 	TWeakObjectPtr<UEnemyFactory> OriginFactory;
+
+	TWeakObjectPtr<AGameTile> TileFrom, TileTo;
+	FVector PositionFrom, PositionTo;
+	FDirection::EType Dir;
+	FDirection::EChangeType DirChange;
+	float DirAngleFrom, DirAngleTo;
+	float Progress, ProgressFactor;
 };

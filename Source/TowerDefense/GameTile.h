@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Direction.h"
 #include "GameFramework/Actor.h"
 #include "GameTile.generated.h"
 
@@ -13,14 +14,18 @@ class TOWERDEFENSE_API AGameTile : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	// Sets default values for this actor's properties
 	AGameTile();
 
 	static void MakeEastWestNeighbors(AGameTile* EastTile, AGameTile* WestTile);
 	static void MakeNorthSouthNeighbors(AGameTile* NorthTile, AGameTile* SouthTile);
 
+	FORCEINLINE AGameTile* GetNextTileOnPath() const { return NextTileOnPath.Get(); }
 	FORCEINLINE bool HasPath() const { return Distance != TNumericLimits<int32>::Max(); }
+
+	FORCEINLINE FVector GetExitPoint() const { return ExitPoint; }
+	FORCEINLINE FDirection::EType GetPathDirection() const { return PathDirection; }
 
 	FORCEINLINE bool IsAlternative() const { return bIsAlternative; }
 	FORCEINLINE void SetIsAlternative(bool bInIsAlternative) { bIsAlternative = bInIsAlternative; }
@@ -43,7 +48,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	AGameTile* GrowPathTo(AGameTile* NeighborTile);
+	AGameTile* GrowPathTo(AGameTile* NeighborTile, FDirection::EType Dir);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=TowerDefense, meta=(AllowPrivateAccess="true"))
@@ -60,6 +65,9 @@ private:
 	TWeakObjectPtr<AGameTile> NorthTile, EastTile, SouthTile, WestTile;
 	TWeakObjectPtr<AGameTile> NextTileOnPath;
 	int32 Distance;
+
+	FVector ExitPoint;
+	FDirection::EType PathDirection;
 
 	bool bIsAlternative;
 	TWeakObjectPtr<AGameTileContent> GameTileContent;

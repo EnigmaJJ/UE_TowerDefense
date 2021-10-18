@@ -2,6 +2,7 @@
 
 #include "GameComponent.h"
 #include "Enemy.h"
+#include "EnemyCollection.h"
 #include "EnemyFactory.h"
 #include "GameBoardComponent.h"
 #include "GameTile.h"
@@ -22,6 +23,8 @@ void UGameComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	EnemyCollection = NewObject<UEnemyCollection>();
+
 	EnemyFactory = NewObject<UEnemyFactory>(this, EnemyFactoryClass);
 	GameTileContentFactory = NewObject<UGameTileContentFactory>(this, GameTileContentFactoryClass);
 	
@@ -32,6 +35,8 @@ void UGameComponent::BeginPlay()
 	UWorld* World = GetWorld();
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 	PlayerController->SetShowMouseCursor(true);
+
+	SpawnEnemy();
 }
 
 void UGameComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -67,6 +72,8 @@ void UGameComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		SpawnProgress -= 1.0f;
 		SpawnEnemy();
 	}
+
+	EnemyCollection->GameUpdate();
 }
 
 #if WITH_EDITOR
@@ -130,4 +137,5 @@ void UGameComponent::SpawnEnemy()
 	AGameTile* SpawnPoint = GameBoardComponent->GetSpawnPoint(FMath::RandRange(0, GameBoardComponent->GetSpawnPointCount() - 1));
 	AEnemy* Enemy = EnemyFactory->Get();
 	Enemy->SpawnOn(SpawnPoint);
+	EnemyCollection->Add(Enemy);
 }

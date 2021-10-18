@@ -53,28 +53,29 @@ void AGameTile::SetContent(AGameTileContent* InGameTileContent)
 
 AGameTile* AGameTile::GrowPathNorth()
 {
-	return GrowPathTo(NorthTile.Get());
+	return GrowPathTo(NorthTile.Get(), FDirection::EType::South);
 }
 
 AGameTile* AGameTile::GrowPathEast()
 {
-	return GrowPathTo(EastTile.Get());
+	return GrowPathTo(EastTile.Get(), FDirection::EType::West);
 }
 
 AGameTile* AGameTile::GrowPathSouth()
 {
-	return GrowPathTo(SouthTile.Get());
+	return GrowPathTo(SouthTile.Get(), FDirection::EType::North);
 }
 
 AGameTile* AGameTile::GrowPathWest()
 {
-	return GrowPathTo(WestTile.Get());
+	return GrowPathTo(WestTile.Get(), FDirection::EType::East);
 }
 
 void AGameTile::BecomeDestination()
 {
 	NextTileOnPath.Reset();
 	Distance = 0;
+	ExitPoint = GetActorLocation();
 }
 
 void AGameTile::ClearPath()
@@ -89,7 +90,7 @@ void AGameTile::BeginPlay()
 	Super::BeginPlay();
 }
 
-AGameTile* AGameTile::GrowPathTo(AGameTile* NeighborTile)
+AGameTile* AGameTile::GrowPathTo(AGameTile* NeighborTile, FDirection::EType Dir)
 {
 	checkfSlow(NeighborTile->HasPath(), TEXT("No path!"));
 
@@ -98,8 +99,11 @@ AGameTile* AGameTile::GrowPathTo(AGameTile* NeighborTile)
 		return nullptr;
 	}
 
+	NeighborTile->PathDirection = Dir;
+
 	NeighborTile->Distance = Distance + 1;
 	NeighborTile->NextTileOnPath = this;
+	NeighborTile->ExitPoint = NeighborTile->GetActorLocation() + (FDirection::GetHalfVector(Dir) * GetWorldSettings()->WorldToMeters);
 
 	AGameTileContent* NeighborTileContent = NeighborTile->GetContent();
 	if ((nullptr != NeighborTileContent) && (EGameTileContentType::Wall == NeighborTileContent->GetType()))

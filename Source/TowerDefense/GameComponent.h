@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "GameComponent.generated.h"
 
+class UEnemyCollection;
 class UEnemyFactory;
 class UGameTileContentFactory;
 
@@ -52,6 +53,9 @@ private:
 
 	UPROPERTY()
 	UEnemyFactory* EnemyFactory;
+
+	UPROPERTY()
+	UEnemyCollection* EnemyCollection;
 
 	float SpawnProgress;
 };
